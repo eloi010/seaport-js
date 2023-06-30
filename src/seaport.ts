@@ -511,8 +511,9 @@ export class Seaport {
       orderComponents
     );
 
-    // Use EIP-2098 compact signatures to save gas.
-    return ethers.utils.splitSignature(signature).compact;
+    // DO NOT Use EIP-2098 compact signatures to save gas.
+    // return ethers.utils.splitSignature(signature).compact;
+    return signature;
   }
 
   /**
@@ -539,8 +540,8 @@ export class Seaport {
       value
     );
 
-    // Use EIP-2098 compact signatures to save gas.
-    signature = ethers.utils.splitSignature(signature).compact;
+    // DO NOT Use EIP-2098 compact signatures to save gas.
+    // signature = ethers.utils.splitSignature(signature).compact;
 
     const orders: OrderWithCounter[] = orderComponents.map((parameters, i) => ({
       parameters,
