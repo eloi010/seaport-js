@@ -8,7 +8,9 @@ import type {
   DomainRegistry,
   TestERC20USDC,
   TestERC1271Wallet,
+  UpgradeableOpenfortAccount,
 } from "../../src/typechain-types";
+import { expect } from "chai";
 
 const chai = require("chai");
 const chaiAsPromised = require("chai-as-promised");
@@ -26,6 +28,7 @@ type Fixture = {
   testErc20USDC: TestERC20USDC;
   testErc1155: TestERC1155;
   testERC1271Wallet: TestERC1271Wallet;
+  upgradeableOpenfortAccount: UpgradeableOpenfortAccount;
   seaportWithSigner: Seaport;
 };
 
@@ -97,6 +100,42 @@ export const describeWithFixture = (
       const testERC1271Wallet = await TestERC1271Wallet.deploy();
       await testERC1271Wallet.deployed();
 
+      const UpgradeableOpenfortAccount = await ethers.getContractFactory(
+        "UpgradeableOpenfortAccount"
+      );
+      const upgradeableOpenfortAccount_implementation =
+        await UpgradeableOpenfortAccount.deploy();
+      await upgradeableOpenfortAccount_implementation.deployed();
+
+      const UpgradeableOpenfortFactory = await ethers.getContractFactory(
+        "UpgradeableOpenfortFactory"
+      );
+      const upgradeableOpenfortFactory =
+        await UpgradeableOpenfortFactory.deploy(
+          "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789",
+          upgradeableOpenfortAccount_implementation.address
+        );
+      await upgradeableOpenfortFactory.deployed();
+
+      const [orderSigner] = await ethers.getSigners();
+      const nonce = ethers.utils.hexZeroPad(ethers.utils.hexlify(1), 32);
+      const upgradeableOpenfortAccount_tx =
+        await upgradeableOpenfortFactory.createAccountWithNonce(
+          orderSigner.address,
+          nonce
+        );
+      const receipt = await upgradeableOpenfortAccount_tx.wait();
+      expect(
+        receipt.events![1].address ==
+          (await upgradeableOpenfortFactory.getAddressWithNonce(
+            orderSigner.address,
+            nonce
+          ))
+      );
+      const upgradeableOpenfortAccount = UpgradeableOpenfortAccount.attach(
+        receipt.events![1].address
+      );
+
       // In order for cb to get the correct fixture values we have
       // to pass a reference to an object that you we mutate.
       fixture.seaportContract = seaportContract;
@@ -108,6 +147,7 @@ export const describeWithFixture = (
       fixture.testErc20 = testErc20;
       fixture.testErc20USDC = testErc20USDC;
       fixture.testERC1271Wallet = testERC1271Wallet;
+      fixture.upgradeableOpenfortAccount = upgradeableOpenfortAccount;
     });
 
     suiteCb(fixture as Fixture);
