@@ -181,17 +181,18 @@ abstract contract BaseOpenfortAccount is
         public
         view
         override
-        returns (bytes4 magicValue)
+        returns (bytes4)
     {
-        address recovered = _hash.recover(_signature);
-        if (owner() == recovered) {
-            magicValue = MAGICVALUE;
+        address signer = _hash.recover(_signature);
+        if (owner() == signer) {
+            return MAGICVALUE;
         }
         bytes32 hash = _hash.toEthSignedMessageHash();
-        recovered = hash.recover(_signature);
-        if (owner() == recovered) {
-            magicValue = MAGICVALUE;
+        signer = hash.recover(_signature);
+        if (owner() == signer) {
+            return MAGICVALUE;
         }
+        return 0;
     }
 
     /**
