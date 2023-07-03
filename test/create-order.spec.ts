@@ -682,11 +682,9 @@ describeWithFixture("As a user I want to create an order", (fixture) => {
       "eth_signTypedData_v4",
       [offerer.address, messageToSign]
     );
-    // expect(ethers.utils.splitSignature(rawSignTypedMessage).compact).eq(
-    //   order.signature
-    // );
-    // Do not use compact sig
-    expect(rawSignTypedMessage).eq(order.signature);
+    expect(ethers.utils.splitSignature(rawSignTypedMessage).compact).eq(
+      order.signature
+    );
 
     const isValid = await seaportContract
       .connect(randomSigner)
@@ -888,66 +886,27 @@ describeWithFixture(
         seaportWithSigner,
         testErc721,
         testERC1271Wallet,
-        upgradeableOpenfortAccount,
         testErc20,
       } = fixture;
       const [orderSigner, zone, nftOwner] = await ethers.getSigners();
       expect(await testERC1271Wallet.orderSigner()).to.equal(
         orderSigner.address
       );
-
-      //  ----------- /Playing arround with Openfort Account/ -----------
-      const openfort_owner = await upgradeableOpenfortAccount.owner();
-      expect(openfort_owner == orderSigner.address);
-      console.log("Owner: ", orderSigner.address);
-
-      const regKey = await upgradeableOpenfortAccount
-        .connect(orderSigner)
-        ["registerSessionKey(address,uint48,uint48)"](openfort_owner, 0, 999);
-      console.log(regKey);
-
-      const updateEntryPoint = await upgradeableOpenfortAccount
-        .connect(orderSigner)
-        .updateEntryPoint(openfort_owner);
-      console.log(updateEntryPoint);
-
-      //  ----------- /Stop playing arround/ -----------
-
       const nftId = "1";
       await testErc721.mint(nftOwner.address, nftId);
       const startTime = "0";
       const endTime = MAX_INT.toString();
       const salt = generateRandomSalt();
       // Mint 10 tokens to the wallet contract
-      // await testErc20.mint(testERC1271Wallet.address, parseEther("10"));
-      await testErc20.mint(
-        upgradeableOpenfortAccount.address,
+      await testErc20.mint(testERC1271Wallet.address, parseEther("10"));
+      // Give allowance to the seaport contract
+      await testERC1271Wallet.approveToken(
+        testErc20.address,
+        seaportContract.address,
         parseEther("10")
       );
-      // Give allowance to the seaport contract
-      // await testERC1271Wallet.approveToken(
-      //   testErc20.address,
-      //   seaportContract.address,
-      //   parseEther("10")
-      // );
 
-      // Give allowance to the seaport contract
-      // Generate the calldata to send to execute()
-      let amount = parseEther("10");
-      const approveCallData = testErc20.interface.encodeFunctionData(
-        "approve",
-        [seaportContract.address, amount]
-      );
-      // console.log(amount);
-      const approveCallDataBytes = ethers.utils.arrayify(approveCallData);
-
-      const exec = await upgradeableOpenfortAccount
-        .connect(orderSigner)
-        .execute(testErc20.address, 0, approveCallDataBytes);
-      // console.log(exec);
-
-      // const accountAddress = testERC1271Wallet.address;
-      const accountAddress = upgradeableOpenfortAccount.address;
+      const accountAddress = testERC1271Wallet.address;
       const orderUsaCase = await seaportWithSigner.createOrder(
         {
           startTime,
@@ -977,15 +936,8 @@ describeWithFixture(
 
       const createOrderAction = offerActions[0] as CreateOrderAction;
       expect(createOrderAction.type).to.equal("create");
-      // const message = await createOrderAction.getMessageToSign();
-      // console.log(message);
+
       const order = await orderUsaCase.executeAllActions();
-      // console.log(order.signature);
-      // const sig = await upgradeableOpenfortAccount.isValidSignature(
-      //   message,
-      //   order.signature
-      // );
-      // console.log(sig);
 
       const fulfillUsaCase = await seaport.fulfillOrders({
         fulfillOrderDetails: [{ order }],
@@ -1011,11 +963,8 @@ describeWithFixture(
 
       expect(transaction.data.slice(-8)).to.eq(OPENSEA_TAG);
 
-      // expect(await testErc721.ownerOf(nftId)).to.equal(
-      //   testERC1271Wallet.address
-      // );
       expect(await testErc721.ownerOf(nftId)).to.equal(
-        upgradeableOpenfortAccount.address
+        testERC1271Wallet.address
       );
       expect(await testErc20.balanceOf(nftOwner.address)).to.equal(
         ethers.utils.parseEther("9.75")
