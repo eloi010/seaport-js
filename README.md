@@ -30,6 +30,12 @@ npm i
 
 **3. Run the Openfort test**
 
+The current sample is using a local hardhat network to deploy and interact with Seaport and Openfort contracts.
+The test starts creates a testing NFT (testErc721) and a testing ERC20s (testErc20).
+Then, it uses an Openfort account to publish an offer to purchase a given testErc721 for 10 testErc20s.
+In order to publish such offer, it needs to be signed by the owner of the openfort account (`orderSigner` in the test).
+Finally, the owner of the NFT fulfills the offer.
+
 ```console
 npx hardhat test test/create-order-openfort.ts
 ```
