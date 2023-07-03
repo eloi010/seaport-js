@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { parseEther } from "ethers/lib/utils";
+import { parseEther, verifyTypedData } from "ethers/lib/utils";
 import { ethers } from "hardhat";
 import { ItemType, MAX_INT } from "../src/constants";
 import { CreateOrderAction } from "../src/types";
@@ -71,7 +71,6 @@ describeWithFixture(
       // console.log(exec);
 
       // Create an order to buy the NFT for 10 testErc20 tokens
-      const accountAddress = upgradeableOpenfortAccount.address;
       const orderUseCase = await seaportWithSigner.createOrder(
         {
           startTime,
@@ -93,7 +92,7 @@ describeWithFixture(
           // 2.5% fee
           fees: [{ recipient: zone.address, basisPoints: 250 }],
         },
-        accountAddress
+        upgradeableOpenfortAccount.address
       );
 
       // Verify the action was registerd in the order
@@ -104,9 +103,10 @@ describeWithFixture(
       const createOrderAction = offerActions[0] as CreateOrderAction;
       expect(createOrderAction.type).to.equal("create");
       const message = await createOrderAction.getMessageToSign();
-      console.log(message);
+      // console.log(message);
 
       const order = await orderUseCase.executeAllActions();
+      console.log(order.signature);
       // console.log(order.signature);
 
       // const sig = await upgradeableOpenfortAccount.isValidSignature(
