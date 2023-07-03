@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { parseEther, verifyTypedData } from "ethers/lib/utils";
+import { parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
 import { ItemType, MAX_INT } from "../src/constants";
 import { CreateOrderAction } from "../src/types";

@@ -6,7 +6,7 @@ Specifically, it shows how to create orders and fulfilling them using Openfort a
 
 ## Demo
 
-[Live demo video](https://ToDo)
+[Live demo video](https://www.youtube.com/watch?v=Jm8Q12clABQ)
 
 ## Features
 
