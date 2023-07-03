@@ -1,149 +1,45 @@
-# Seaport.js Demo
+# Seaport.js Demo With Openfort Accounts
 
-[Seaport][seaport-link] is a new marketplace protocol for safely and efficiently buying and selling NFTs. This is a JavaScript library intended to make interfacing with the contract reasonable and easy.
+Seaport is a new marketplace protocol from Opensea for safely and efficiently buying and selling NFTs.
+This sample is exemplifying how to integrate Openfort contracts with the Seaport JavaScript library.
+Specifically, it shows how to create orders and fulfilling them using Openfort accounts.
 
-- [Synopsis](#synopsis)
-- [Installation](#installation)
-- [Getting Started](#getting-started)
-  - [Use Cases](#use-cases)
-- [Contributing](#contributing)
+## Demo
 
-## Synopsis
+[Live demo video](https://ToDo)
 
-This is a JavaScript library to help interface with Seaport. It includes various helper methods and constants that makes interfacing with Seaport easier. These include creating orders, fulfilling orders, doing the necessary balance and approval checks, and more. We recommend taking a look at the [Seaport][seaport-link] docs to get a better understanding of how the Seaport marketplace works.
+## Features
 
-## Installation
+- ⛵️ Seaport.JS from Opensea
+- 🏰 Openfort accounts
 
-We recommend using [nvm](https://github.com/nvm-sh/nvm) to manage Node.js versions. Execute `nvm use`, if you have `nvm` installed.
+## How to run locally
 
-Then, in your project, run:
+**1. Clone the sample repository**
 
 ```console
-npm install --save @opensea/seaport-js
+git clone --recurse-submodules git@github.com:openfort-xyz/samples.git
+cd seaport-js
 ```
 
-## Getting Started
+**2. Install all dependencies**
 
-Instantiate your instance of seaport using your ethers provider:
-
-### Examples
-
-#### Through a browser provider (i.e. Metamask)
-
-```js
-import { Seaport } from "@opensea/seaport-js";
-import { ethers } from "ethers";
-
-const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-const seaport = new Seaport(provider);
+```console
+npm i
 ```
 
-#### Through a RPC Provider (i.e. Alchemy)
+**3. Run the Openfort test**
 
-```js
-import { Seaport } from "@opensea/seaport-js";
-import { ethers } from "ethers";
-
-const provider = new ethers.providers.JsonRpcProvider(
-  "https://<network>.alchemyapi.io/v2/YOUR-API-KEY"
-);
-
-const seaport = new Seaport(provider);
+```console
+npx hardhat test test/create-order-openfort.ts
 ```
 
-#### With custom signer
+## Get support
 
-```js
-import { Seaport } from "@opensea/seaport-js";
-import { ethers } from "ethers";
+If you found a bug or want to suggest a new [feature/use case/sample], please [file an issue](../../../issues).
 
-// Provider must be provided to the signer when supplying a custom signer
-const provider = new ethers.providers.JsonRpcProvider(
-  "https://<network>.alchemyapi.io/v2/YOUR-API-KEY"
-);
+If you have questions, comments, or need help with code, we're here to help:
 
-const signer = new ethers.Wallet("YOUR_PK", provider);
-
-const seaport = new Seaport(signer);
-```
-
-Look at the relevant definitions in `seaport.ts` in order to see the different functionality this library offers.
-
-### Use Cases
-
-Many of the main core flows return _use cases_. What this means is that if you were to create an order (a la `createOrder`), the library helps perform the necessary balance and approval checks based on the `offer` of the order being created. If the `offerer` requires approvals on one asset contract, the `actions` field of the use case would contain an approval action that the user should execute first in order for the trade to succeed in the future.
-
-### Examples
-
-#### Listing an ERC-721 for 10 ETH and fulfilling it
-
-```js
-const offerer = "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266";
-const fulfiller = "0x70997970c51812dc3a010c7d01b50e0d17dc79c8";
-const { executeAllActions } = await seaport.createOrder(
-  {
-    offer: [
-      {
-        itemType: ItemType.ERC721,
-        token: "0x8a90cab2b38dba80c64b7734e58ee1db38b8992e",
-        identifier: "1",
-      },
-    ],
-    consideration: [
-      {
-        amount: ethers.utils.parseEther("10").toString(),
-        recipient: offerer,
-      },
-    ],
-  },
-  offerer
-);
-
-const order = await executeAllActions();
-
-const { executeAllActions: executeAllFulfillActions } =
-  await seaport.fulfillOrder({
-    order,
-    accountAddress: fulfiller,
-  });
-
-const transaction = executeAllFulfillActions();
-```
-
-#### Making an offer for an ERC-721 for 10 WETH and fulfilling it
-
-```js
-const offerer = "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266";
-const fulfiller = "0x70997970c51812dc3a010c7d01b50e0d17dc79c8";
-const { executeAllActions } = await seaport.createOrder(
-  {
-    offer: [
-      {
-        amount: parseEther("10").toString(),
-        // WETH
-        token: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-      },
-    ],
-    consideration: [
-      {
-        itemType: ItemType.ERC721,
-        token: "0x8a90cab2b38dba80c64b7734e58ee1db38b8992e",
-        identifier: "1",
-        recipient: offerer,
-      },
-    ],
-  },
-  offerer
-);
-
-const order = await executeAllActions();
-
-const { executeAllActions: executeAllFulfillActions } =
-  await seaport.fulfillOrder({
-    order,
-    accountAddress: fulfiller.address,
-  });
-
-const transaction = executeAllFulfillActions();
-```
+- on [Discord](https://discord.com/invite/t7x7hwkJF4)
+- on Twitter at [@openfortxyz](https://twitter.com/openfortxyz)
+- by [email](mailto:support+github@openfort.xyz)
