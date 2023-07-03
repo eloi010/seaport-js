@@ -1,16 +1,4 @@
-<p align="center">
-  <img src="./img/banner.png" />
-</p>
-
-[![Version][version-badge]][version-link]
-[![npm][npm-badge]][npm-link]
-[![Test CI][ci-badge]][ci-link]
-[![Code Coverage][coverage-badge]][coverage-link]
-[![License][license-badge]][license-link]
-[![Docs][docs-badge]][docs-link]
-[![Discussions][discussions-badge]][discussions-link]
-
-# Seaport.js
+# Seaport.js Demo
 
 [Seaport][seaport-link] is a new marketplace protocol for safely and efficiently buying and selling NFTs. This is a JavaScript library intended to make interfacing with the contract reasonable and easy.
 
@@ -159,27 +147,3 @@ const { executeAllActions: executeAllFulfillActions } =
 
 const transaction = executeAllFulfillActions();
 ```
-
-## Contributing
-
-See [the contributing guide](./.github/CONTRIBUTING.md) for detailed instructions on how to get started with this project.
-
-## License
-
-[MIT](LICENSE) Copyright 2022 Ozone Networks, Inc.
-
-[seaport-link]: https://github.com/ProjectOpenSea/seaport
-[version-badge]: https://img.shields.io/github/package-json/v/ProjectOpenSea/seaport-js
-[version-link]: https://github.com/ProjectOpenSea/seaport-js/releases
-[npm-badge]: https://img.shields.io/npm/v/@opensea/seaport-js?color=red
-[npm-link]: https://www.npmjs.com/package/@opensea/seaport-js
-[ci-badge]: https://github.com/ProjectOpenSea/seaport-js/actions/workflows/main.yaml/badge.svg
-[ci-link]: https://github.com/ProjectOpenSea/seaport-js/actions/workflows/main.yaml
-[coverage-badge]: https://codecov.io/gh/ProjectOpenSea/seaport-js/branch/main/graph/badge.svg
-[coverage-link]: https://codecov.io/gh/ProjectOpenSea/seaport-js
-[license-badge]: https://img.shields.io/github/license/ProjectOpenSea/seaport-js
-[license-link]: https://github.com/ProjectOpenSea/seaport-js/blob/main/LICENSE
-[docs-badge]: https://img.shields.io/badge/Seaport.js-documentation-informational
-[docs-link]: https://github.com/ProjectOpenSea/seaport-js/blob/main/README.md#getting-started
-[discussions-badge]: https://img.shields.io/badge/Seaport.js-discussions-blueviolet
-[discussions-link]: https://github.com/ProjectOpenSea/seaport-js/discussions
