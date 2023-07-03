@@ -103,8 +103,8 @@ describeWithFixture(
       // Verify the order action is of type create
       const createOrderAction = offerActions[0] as CreateOrderAction;
       expect(createOrderAction.type).to.equal("create");
-      // const message = await createOrderAction.getMessageToSign();
-      // console.log(message);
+      const message = await createOrderAction.getMessageToSign();
+      console.log(message);
 
       const order = await orderUseCase.executeAllActions();
       // console.log(order.signature);
